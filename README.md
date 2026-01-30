@@ -29,7 +29,7 @@ To write a program to predict the price of the house and number of occupants in 
 ```
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.linear_model import SGDRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 
 X = np.array([
@@ -40,17 +40,14 @@ X = np.array([
     [1500, 5]
 ])
 
-
 price = np.array([20, 35, 45, 55, 70])      
-occupants = np.array([2, 3, 4, 5, 6])     
-
+occupants = np.array([2, 3, 4, 5, 6])      
 
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-
-price_model = SGDRegressor(max_iter=5000, tol=1e-4)
-occupant_model = SGDRegressor(max_iter=5000, tol=1e-4)
+price_model = LinearRegression()
+occupant_model = LinearRegression()
 
 price_model.fit(X_scaled, price)
 occupant_model.fit(X_scaled, occupants)
@@ -66,14 +63,21 @@ print("Predicted Number of Occupants:", round(predicted_occupants[0]))
 
 house_size = X[:, 0].reshape(-1, 1)
 
+
+rooms_mean = np.mean(X[:, 1])
+X_plot = np.column_stack((house_size, np.full(house_size.shape, rooms_mean)))
+X_plot_scaled = scaler.transform(X_plot)
+
 plt.figure()
-plt.scatter(house_size, price)
-plt.plot(house_size, price_model.predict(X_scaled))
-plt.scatter(new_house[0][0], predicted_price)
+plt.scatter(X[:, 0], price, color='blue', label='Actual Price')
+plt.plot(house_size, price_model.predict(X_plot_scaled), color='red', label='Predicted Line')
+plt.scatter(new_house[0][0], predicted_price, color='green', s=100, label='Predicted Point')
 plt.xlabel("House Size (sq.ft)")
 plt.ylabel("House Price")
-plt.title("Multivariate Linear Regression using SGD Regressor")
+plt.title("Linear Regression - House Price Prediction")
+plt.legend()
 plt.show()
+
 
 
 ```
@@ -81,7 +85,10 @@ plt.show()
 ## Output:
 
 
-<img width="1198" height="692" alt="Screenshot 2026-01-30 143208" src="https://github.com/user-attachments/assets/f53bdc4f-3af5-44ed-94e0-218c81ea16df" />
+
+
+<img width="1186" height="695" alt="Screenshot 2026-01-30 144553" src="https://github.com/user-attachments/assets/477634ed-d8dc-4e01-b521-af87f6a6e112" />
+
 
 ## Result:
 Thus the program to implement the multivariate linear regression model for predicting the price of the house and number of occupants in the house with SGD regressor is written and verified using python programming.
